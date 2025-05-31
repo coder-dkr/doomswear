@@ -13,7 +13,13 @@ dotenv.config();
 const app = express();
 
 
-app.use(cors());
+const corsOptions = {
+  origin:["https://doomswear.vercel.app","http://localhost:5173"],
+  optionsSuccessStatus: 200, 
+  Credentials : true
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 
