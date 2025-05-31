@@ -101,10 +101,10 @@ router.post(
         await dbProduct.save({ session });
         await user.save({ session });
         await session.commitTransaction();
-        await sendOrderConfirmationEmail(customerInfo.email, order);
+        // await sendOrderConfirmationEmail(customerInfo.email, order);
       } else {
         await session.commitTransaction();
-        await sendOrderFailureEmail(customerInfo.email, order);
+        // await sendOrderFailureEmail(customerInfo.email, order);
         return res.status(200).json({
           message: `Status ${status}. Order couldn't be placed`,
           status,
