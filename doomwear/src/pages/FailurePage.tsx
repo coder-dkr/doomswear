@@ -36,7 +36,11 @@ const FailurePage = () => {
   const [error, setError] = useState<string | null>(null);
   
   const { orderId } = useParams<{ orderId: string }>();
+  
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  },[])
   
   useEffect(() => {
     const fetchOrderDetails = async () => {
@@ -100,6 +104,8 @@ const FailurePage = () => {
       };
     }
   };
+
+  
 
   const failureMessage = getFailureMessage();
 

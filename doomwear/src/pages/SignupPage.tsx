@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -62,6 +62,11 @@ const SignupPage = () => {
   });
 
   const watchPassword = form.watch('password');
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  },[])
+  
 
   const checkPasswordRequirement = (requirement: { regex: RegExp }) => {
     return requirement.regex.test(watchPassword);

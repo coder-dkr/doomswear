@@ -42,6 +42,10 @@ const ThankYouPage = () => {
   
   const { orderId } = useParams<{ orderId: string }>();
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  },[])
+  
   
   useEffect(() => {
     const fetchOrderDetails = async () => {

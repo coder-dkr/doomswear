@@ -40,6 +40,10 @@ const ProductPage = () => {
     },
   });
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  },[])
+  
 
   const [activeProductId, setActiveProductId] = useState<string | null>(null);
   useEffect(() => {
@@ -52,14 +56,13 @@ const ProductPage = () => {
   const relatedProducts = products.filter((p) => p._id !== activeProductId).slice(0, 6);
 
 
-
-
   const [quantity, setQuantity] = useState(1);
   const [selectedColor, setSelectedColor] = useState<string>("");
   const [selectedSize, setSelectedSize] = useState<string>("");
   const [activeImageIndex, setActiveImageIndex] = useState(0);
 
   useEffect(() => {
+
     if (PRODUCT) {
       setSelectedColor(PRODUCT.colors[0]?.name || "");
       setSelectedSize(PRODUCT.sizes[1] || "");

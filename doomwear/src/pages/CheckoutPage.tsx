@@ -94,6 +94,12 @@ const CheckoutPage = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
 
+
+useEffect(() => {
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+},[])
+
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
