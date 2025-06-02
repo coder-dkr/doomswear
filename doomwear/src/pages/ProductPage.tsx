@@ -65,7 +65,7 @@ const ProductPage = () => {
 
     if (PRODUCT) {
       setSelectedColor(PRODUCT.colors[0]?.name || "");
-      setSelectedSize(PRODUCT.sizes[1] || "");
+      setSelectedSize(PRODUCT.sizes[0] || "");
     }
   }, [PRODUCT]);
 
