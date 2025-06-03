@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { Link, useNavigate } from 'react-router-dom';
-import { Loader2, Eye, EyeOff, CheckCircle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Link, useNavigate } from "react-router-dom";
+import { Loader2, Eye, EyeOff, CheckCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import ReCAPTCHA from "react-google-recaptcha";
 import {
   Form,
   FormControl,
@@ -12,32 +13,38 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { useAuth } from '@/hooks/useAuth';
-import { motion } from 'framer-motion';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { useAuth } from "@/hooks/useAuth";
+import { motion } from "framer-motion";
 
 const passwordRequirements = [
-  { id: 'length', label: 'At least 8 characters', regex: /.{8,}/ },
-  { id: 'lowercase', label: 'One lowercase letter', regex: /[a-z]/ },
-  { id: 'uppercase', label: 'One uppercase letter', regex: /[A-Z]/ },
-  { id: 'number', label: 'One number', regex: /[0-9]/ },
+  { id: "length", label: "At least 8 characters", regex: /.{8,}/ },
+  { id: "lowercase", label: "One lowercase letter", regex: /[a-z]/ },
+  { id: "uppercase", label: "One uppercase letter", regex: /[A-Z]/ },
+  { id: "number", label: "One number", regex: /[0-9]/ },
 ];
 
-const formSchema = z.object({
-  name: z.string().min(2, { message: 'Name must be at least 2 characters' }),
-  email: z.string().email({ message: 'Please enter a valid email address' }),
-  password: z
-    .string()
-    .min(8, { message: 'Password must be at least 8 characters' })
-    .regex(/[a-z]/, { message: 'Password must contain at least one lowercase letter' })
-    .regex(/[A-Z]/, { message: 'Password must contain at least one uppercase letter' })
-    .regex(/[0-9]/, { message: 'Password must contain at least one number' }),
-  confirmPassword: z.string(),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ['confirmPassword'],
-});
+const formSchema = z
+  .object({
+    name: z.string().min(2, { message: "Name must be at least 2 characters" }),
+    email: z.string().email({ message: "Please enter a valid email address" }),
+    password: z
+      .string()
+      .min(8, { message: "Password must be at least 8 characters" })
+      .regex(/[a-z]/, {
+        message: "Password must contain at least one lowercase letter",
+      })
+      .regex(/[A-Z]/, {
+        message: "Password must contain at least one uppercase letter",
+      })
+      .regex(/[0-9]/, { message: "Password must contain at least one number" }),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
 
 type FormValues = z.infer<typeof formSchema>;
 
@@ -45,7 +52,8 @@ const SignupPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  
+  const [recapToken, setRecapToken] = useState<string | null>(null);
+
   const { signup } = useAuth();
 
   const navigate = useNavigate();
@@ -53,26 +61,29 @@ const SignupPage = () => {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
     },
-    mode: 'onChange',
+    mode: "onChange",
   });
 
-  const watchPassword = form.watch('password');
+  const watchPassword = form.watch("password");
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  },[])
-  
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
 
   const checkPasswordRequirement = (requirement: { regex: RegExp }) => {
     return requirement.regex.test(watchPassword);
   };
 
   const onSubmit = async (data: FormValues) => {
+    if(!recapToken) {
+      alert("Please verify you are human");
+      return;
+    }
     setIsLoading(true);
     try {
       await signup(data.name, data.email, data.password);
@@ -80,10 +91,10 @@ const SignupPage = () => {
       //   title: "Account Created",
       //   description: "Welcome to DoomSwear! Your account has been created successfully.",
       // });
-      navigate('/');
+      navigate("/");
     } catch (error) {
       // const errorMessage = error.response?.data?.message || 'Failed to create account. Please try again.';
-      console.error(error)
+      console.error(error);
       // toast({
       //   title: "Signup Failed",
       //   description: errorMessage,
@@ -96,7 +107,7 @@ const SignupPage = () => {
 
   return (
     <div className="container mx-auto px-4 py-8 md:py-16">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -106,7 +117,7 @@ const SignupPage = () => {
           <h1 className="text-3xl font-bold">Create an Account</h1>
           <p className="text-gray-600 mt-2">Join DoomSwear to start shopping</p>
         </div>
-        
+
         <div className="bg-white p-8 rounded-lg shadow-md">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
@@ -123,7 +134,7 @@ const SignupPage = () => {
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name="email"
@@ -131,9 +142,9 @@ const SignupPage = () => {
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input 
-                        placeholder="you@example.com" 
-                        type="email" 
+                      <Input
+                        placeholder="you@example.com"
+                        type="email"
                         {...field}
                       />
                     </FormControl>
@@ -141,7 +152,7 @@ const SignupPage = () => {
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name="password"
@@ -150,15 +161,15 @@ const SignupPage = () => {
                     <FormLabel>Password</FormLabel>
                     <FormControl>
                       <div className="relative">
-                        <Input 
-                          placeholder="••••••••" 
-                          type={showPassword ? "text" : "password"} 
+                        <Input
+                          placeholder="••••••••"
+                          type={showPassword ? "text" : "password"}
                           {...field}
                         />
-                        <button 
+                        <button
                           type="button"
                           className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
-                          onClick={() => setShowPassword(prev => !prev)}
+                          onClick={() => setShowPassword((prev) => !prev)}
                         >
                           {showPassword ? (
                             <EyeOff className="h-4 w-4" />
@@ -169,15 +180,15 @@ const SignupPage = () => {
                       </div>
                     </FormControl>
                     <FormMessage />
-                    
+
                     <div className="mt-2 space-y-1">
                       {passwordRequirements.map((req) => (
-                        <div 
-                          key={req.id} 
+                        <div
+                          key={req.id}
                           className={`flex items-center text-xs ${
-                            watchPassword && checkPasswordRequirement(req) 
-                              ? 'text-green-600' 
-                              : 'text-gray-500'
+                            watchPassword && checkPasswordRequirement(req)
+                              ? "text-green-600"
+                              : "text-gray-500"
                           }`}
                         >
                           {watchPassword && checkPasswordRequirement(req) ? (
@@ -192,7 +203,7 @@ const SignupPage = () => {
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name="confirmPassword"
@@ -201,15 +212,17 @@ const SignupPage = () => {
                     <FormLabel>Confirm Password</FormLabel>
                     <FormControl>
                       <div className="relative">
-                        <Input 
-                          placeholder="••••••••" 
-                          type={showConfirmPassword ? "text" : "password"} 
+                        <Input
+                          placeholder="••••••••"
+                          type={showConfirmPassword ? "text" : "password"}
                           {...field}
                         />
-                        <button 
+                        <button
                           type="button"
                           className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
-                          onClick={() => setShowConfirmPassword(prev => !prev)}
+                          onClick={() =>
+                            setShowConfirmPassword((prev) => !prev)
+                          }
                         >
                           {showConfirmPassword ? (
                             <EyeOff className="h-4 w-4" />
@@ -223,9 +236,16 @@ const SignupPage = () => {
                   </FormItem>
                 )}
               />
-              
-              <Button 
-                type="submit" 
+
+              <div className="w-full">
+                <ReCAPTCHA
+                  sitekey="6LePxFQrAAAAAD8d3UFMrP9c7ZTVcjPVBgg5oNyz"
+                  onChange={(val) => setRecapToken(val)}
+                />
+              </div>
+
+              <Button
+                type="submit"
                 className="w-full mt-6 bg-pink-600 hover:bg-pink-700 h-11"
                 disabled={isLoading}
               >
@@ -235,14 +255,17 @@ const SignupPage = () => {
                     Creating Account...
                   </span>
                 ) : (
-                  <span className='text-white font-medium'>Create Account</span>
+                  <span className="text-white font-medium">Create Account</span>
                 )}
               </Button>
-              
+
               <div className="text-center mt-4">
                 <p className="text-gray-600">
-                  Already have an account?{' '}
-                  <Link to="/login" className="text-pink-600 hover:text-pink-800 font-medium">
+                  Already have an account?{" "}
+                  <Link
+                    to="/login"
+                    className="text-pink-600 hover:text-pink-800 font-medium"
+                  >
                     Log in
                   </Link>
                 </p>
@@ -250,8 +273,6 @@ const SignupPage = () => {
             </form>
           </Form>
         </div>
-        
-
       </motion.div>
     </div>
   );
