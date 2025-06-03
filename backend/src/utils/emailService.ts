@@ -48,7 +48,7 @@ export const sendOrderConfirmationEmail = async (
               </tr>
               <tr>
                 <td style="padding: 8px 0; text-align: right; font-weight: bold;">Subtotal:</td>
-                <td style="padding: 8px 0; text-align: right;">₹${order.product.price * order.product.quantity}</td>
+                <td style="padding: 8px 0; text-align: right;">₹${(order.product.price * order.product.quantity).toFixed(2)}</td>
               </tr>
               <tr>
                 <td style="padding: 8px 0; text-align: right; font-weight: bold;">Shipping:</td>
