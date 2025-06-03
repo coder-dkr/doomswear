@@ -161,7 +161,7 @@ const LoginPage = () => {
                 disabled={isLoading || !recapToken}
               >
                 {isLoading ? (
-                  <span className="flex items-center justify-center">
+                  <span className="flex items-center justify-center text-white font-medium">
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     Logging in...
                   </span>
