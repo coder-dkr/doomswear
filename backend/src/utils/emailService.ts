@@ -16,8 +16,8 @@ export const sendOrderConfirmationEmail = async (
   order: any
 ) => {
   const mailOptions = {
-    from: '"DoomsWear Shop" <noreply@demomailtrap.co>',
-    to: "dhruvroykumart@gmail.com",
+    from: '"DoomsWear Shop" <noreply@dhruvroy.in>',
+    to: email,
     subject: `Order Confirmation - #${order.orderNumber}`,
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -99,8 +99,8 @@ export const sendOrderFailureEmail = async (
   order: any
 ) => {
   const mailOptions = {
-    from: '"DoomsWear Shop" <noreply@demomailtrap.co>',
-    to: "dhruvroykumart@gmail.com",
+    from: '"DoomsWear Shop" <noreply@dhruvroy.in>',
+    to: email,
     subject: `Payment Failed - Order #${order.orderNumber}`,
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
