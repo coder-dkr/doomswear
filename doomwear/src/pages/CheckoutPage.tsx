@@ -504,7 +504,7 @@ useEffect(() => {
                           : processingResult === "declined"
                           ? "Payment declined. Please try another card."
                           : processingResult === "error"
-                          ? error ? error : "Some Error Occured. Cannot place Order"
+                          ? error ? error : "Some Error Occured. Cannot place Order. Please check after some time."
                           : "Payment error. Please try again later."}
                       </span>
                     </div>
